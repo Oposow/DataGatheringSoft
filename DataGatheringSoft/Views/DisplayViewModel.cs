@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using DataGatheringSoft.Models;
 
@@ -85,19 +83,7 @@ namespace DataGatheringSoft.Views
             foreach(var fileName in fileNames)
             {
                 string fullName = Path.Combine(directory, fileName);
-                var info = new FileInfo(fullName);
-                AllFiles.Add(new FileModel()
-                {
-                    Name = Path.GetFileNameWithoutExtension(info.FullName),
-                    Directory = relativePath,
-                    CreationDate = info.CreationTime,
-                    ModificationDate = info.LastWriteTime,
-                    AccessDate = info.LastAccessTime,
-                    Size = info.Length,
-                    Extension = info.Extension,
-                    FileSecurity = File.GetAccessControl(fullName),
-                    FileAttributes = info.Attributes
-                });
+                AllFiles.Add(new FileModel(fullName, relativePath));
             }
         }
 

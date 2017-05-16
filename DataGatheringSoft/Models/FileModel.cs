@@ -10,7 +10,19 @@ namespace DataGatheringSoft.Models
 {
     public class FileModel
     {
-        // Tutaj nazwy niestety muszą być po polsku, aby z automatu ustawiły się odpowiednie nazwy kolumn
+        public FileModel(string fullname, string relativePath)
+        {
+            var info = new FileInfo(fullname);
+            Name = Path.GetFileNameWithoutExtension(info.FullName);
+            Directory = relativePath;
+            CreationDate = info.CreationTime;
+            ModificationDate = info.LastWriteTime;
+            AccessDate = info.LastAccessTime;
+            Size = info.Length;
+            Extension = info.Extension;
+            FileSecurity = File.GetAccessControl(fullname);
+            FileAttributes = info.Attributes;
+        }
         public string Name { get; set; }
         public string Directory { get; set; }
         public long Size { get; set; }

@@ -37,6 +37,9 @@
             <Controls:MetroTabItem BorderThickness="1" BorderBrush="LightSkyBlue" Header="Wyświetlanie">
                 <Views:DisplayView/>
             </Controls:MetroTabItem>
+            <Controls:MetroTabItem BorderThickness="1" BorderBrush="LightSkyBlue" Header="Powtórzenia">
+                <Views:RepetitionsView/>
+            </Controls:MetroTabItem>
         </Controls:MetroAnimatedTabControl>
     </Grid>
 </Controls:MetroWindow>

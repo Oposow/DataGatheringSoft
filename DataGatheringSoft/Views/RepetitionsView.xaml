@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="DataGatheringSoft.Views.RepetitionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DataGatheringSoft.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="800">
+    <Grid Margin="10, 20,10,20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="145"/>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Column="0" Grid.Row="0" Height="20" Margin="10,0,10,0" Text="Wybierz pierwszy katalog do porównania"></TextBlock>
+        <Grid Grid.Column="0" Grid.Row="1" Margin="10,0,10,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Margin="5,2" Text="Wybierz katalog" VerticalAlignment="Center" Foreground="Gray" FontStyle="Italic"
+                       Visibility="{Binding ElementName=FirstPathTextBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <TextBox Grid.Column="0" Height="25" Name="FirstPathTextBox" FontStyle="Italic" VerticalAlignment="Center" Background="Transparent" Text="{Binding FirstPath}"></TextBox>
+            <Button Grid.Column="1" Height="26" VerticalAlignment="Center" Command="{Binding GetFirstPathCommand}">...</Button>
+        </Grid>
+
+        <TextBlock Grid.Column="1" Grid.Row="0" Height="20" Margin="15,0,10,0" Text="Wybierz drugi katalog do porównania"></TextBlock>
+        <Grid Grid.Column="1" Grid.Row="1" Margin="15,0,10,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Margin="5,2" Text="Wybierz katalog" VerticalAlignment="Center" Foreground="Gray" FontStyle="Italic"
+                       Visibility="{Binding ElementName=SecondPathTextBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <TextBox Grid.Column="0" Height="25" Name="SecondPathTextBox" FontStyle="Italic" VerticalAlignment="Center" Background="Transparent" Text="{Binding SecondPath}"></TextBox>
+            <Button Grid.Column="1" Height="26" VerticalAlignment="Center" Command="{Binding GetSecondPathCommand}">...</Button>
+        </Grid>
+        
+        <local:OptionsView DataContext="{Binding OptionsVM}" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5,0,0"/>
+
+        <Button Grid.Column="1" Grid.Row="3" Width="200" Height="20" Margin="10,0,10,0" HorizontalAlignment="Right" Background="DeepSkyBlue" Foreground="White" Command="{Binding DisplayFilesCommand}">Wyświetl powtarzające się pliki</Button>
+
+        <Grid Grid.Row="4" Grid.ColumnSpan="2" Background="LightSlateGray" Margin="10,10,10,10" Visibility="{Binding IsComparingInProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+            <ProgressBar Margin="0,0,0,5" Height="30" Grid.Row="0" MaxWidth="500" MinWidth="200" 
+                         Value="{Binding ProgressValue}" Maximum="{Binding FilesAmount}" Minimum="0" 
+                         HorizontalAlignment="Center" VerticalAlignment="Center" IsIndeterminate="{Binding ProgressBarIndeterminate}" />
+            <TextBlock Height="30" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Run Text="{Binding ProgressValue}"/>
+                <Run Text=" z "/>
+                <Run Text="{Binding FilesAmount}"/>
+            </TextBlock>
+            <TextBlock Height="30" Grid.Row="2" Text="{Binding CurrentFileName}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Grid>
+
+        <DataGrid Grid.ColumnSpan="2" CanUserAddRows="False" Margin="0,5,0,0" Grid.Row="4" AutoGenerateColumns="False" ItemsSource="{Binding Files}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Rozszerzenie" Binding="{Binding Extension}" />
+                <DataGridTextColumn Header="Katalog" Binding="{Binding Directory}"/>
+                <DataGridTextColumn Header="Rozmiar" Binding="{Binding SizeStr}"/>
+                <DataGridTextColumn Header="Autor" Binding="{Binding Author}"/>
+                <DataGridTextColumn Header="Data utworzenia" Binding="{Binding CreationDateStr}"/>
+                <DataGridTextColumn Header="Data modyfikacji" Binding="{Binding ModificationDateStr}" />
+                <DataGridTextColumn Header="Data dostępu" Binding="{Binding AccessDateStr}" />
+                <DataGridCheckBoxColumn Header="Tylko do odczytu" IsReadOnly="True" Binding="{Binding IsReadonly}" />
+                <DataGridCheckBoxColumn Header="Ukryty" IsReadOnly="True" Binding="{Binding IsHidden}" />
+                <DataGridCheckBoxColumn Header="Skompresowany" IsReadOnly="True" Binding="{Binding IsCompressed}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="4" Grid.ColumnSpan="2" Background="LightGray" Margin="10,10,10,10" Height="125" Width="500" Visibility="{Binding IsComparingInProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="55"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+            <ProgressBar Margin="0,0,0,5" Height="30" Grid.Row="0" MaxWidth="500" MinWidth="200" Background="Gray"
+                         Value="{Binding ProgressValue}" Maximum="{Binding FilesAmount}" Minimum="0" 
+                         HorizontalAlignment="Center" VerticalAlignment="Center" IsIndeterminate="{Binding ProgressBarIndeterminate}" />
+            <TextBlock Height="30" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Run Text="{Binding ProgressValue}"/>
+                <Run Text=" z "/>
+                <Run Text="{Binding FilesAmount}"/>
+            </TextBlock>
+            <TextBlock Height="30" Grid.Row="2" Text="{Binding CurrentFileName}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Grid>
+    </Grid>
+</UserControl>

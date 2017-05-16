@@ -87,7 +87,7 @@ namespace DataGatheringSoft.Views
                         }
 
                         CurrentFileName = "Trwa analizowanie zawartości katalogu źródłowego";
-                        var filesToCopy = GetFilesToCopy(SourcePath, "");
+                        var filesToCopy = GetFilesToCopy(SourcePath);
                         FilesAmount = filesToCopy.Count();
                         ProgressBarIndeterminate = false;
                         foreach (var file in filesToCopy)
@@ -189,7 +189,7 @@ namespace DataGatheringSoft.Views
         }
         #endregion
 
-        private IEnumerable<FileModel> GetFilesToCopy(string source, string relativePath)
+        private IEnumerable<FileModel> GetFilesToCopy(string source, string relativePath = "")
         {
             var result = new List<FileModel>();
             foreach (var dir in Directory.EnumerateDirectories(source))
@@ -198,19 +198,7 @@ namespace DataGatheringSoft.Views
             IEnumerable<FileModel> filesToCopy = Directory.EnumerateFiles(source).Select((x) =>
             {
                 var fullname = Path.Combine(source, x);
-                var info = new FileInfo(fullname);
-                return new FileModel()
-                {
-                    Name = Path.GetFileNameWithoutExtension(info.FullName),
-                    Directory = relativePath,
-                    CreationDate = info.CreationTime,
-                    ModificationDate = info.LastWriteTime,
-                    AccessDate = info.LastAccessTime,
-                    Size = info.Length,
-                    Extension = info.Extension,
-                    FileSecurity = File.GetAccessControl(fullname),
-                    FileAttributes = info.Attributes
-                };
+                return new FileModel(fullname, relativePath);
             });
 
             filesToCopy = FilteringHelper.Filter(filesToCopy, OptionsVM);
